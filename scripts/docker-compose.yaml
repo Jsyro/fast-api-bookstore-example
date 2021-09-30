@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  #######
+  # Business Partner 1
+  #######
+  bkstr_backend:
+    image: ghcr.io/hyperledger-labs/business-partner-agent:local
+    build:
+        context: ../services/bkstr_backend
+        dockerfile: Dockerfile
+    depends_on:
+      - bkstr-db  
+    environment: []
+    ports:
+      - 5000:5000
+    restart: always
+    volumes:
+        - ../services/bkstr_backend/:/app/
+
+  bkstr-db:
+    image: "postgres:12-alpine"
+    environment:
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+    ports:
+      - ${POSTGRESQL_PORT}:5432
+    volumes:
+      - bkstr-db:/var/lib/postgresql/data
+
+volumes:
+    bkstr-db:
